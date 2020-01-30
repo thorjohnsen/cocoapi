@@ -31,6 +31,6 @@ setup(
         'matplotlib>=2.1.0',
         'pybind11>=2.2',
     ],
-    version='2.0+nv0.3.1',
+    version='2.0+nv0.4.0',
     ext_modules= ext_modules
 )
