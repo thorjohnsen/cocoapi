@@ -77,12 +77,12 @@ iou         = _mask.iou
 merge       = _mask.merge
 frPyObjects = _mask.frPyObjects
 
-def encode(bimask):
+def encode(bimask, paste_args={}):
     if len(bimask.shape) == 3:
-        return _mask.encode(bimask)
+        return _mask.encode(bimask, **paste_args)
     elif len(bimask.shape) == 2:
         h, w = bimask.shape
-        return _mask.encode(bimask.reshape((h, w, 1), order='F'))[0]
+        return _mask.encode(bimask.reshape((h, w, 1), order='F'), **paste_args)[0]
 
 def decode(rleObjs):
     if type(rleObjs) == list:

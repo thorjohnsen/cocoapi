@@ -22,6 +22,7 @@ void rlesFree( RLE **R, siz n );
 
 /* Encode binary masks using RLE. */
 void rleEncode( RLE *R, const byte *mask, siz h, siz w, siz n );
+void rleEncodePaste( RLE *R, const byte *M, siz h, siz w, siz n, siz oy, siz ox, siz oh, siz ow );
 
 /* Decode binary masks encoded via RLE. */
 void rleDecode( const RLE *R, byte *mask, siz n );

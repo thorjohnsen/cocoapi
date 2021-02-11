@@ -40,6 +40,62 @@ void rleEncode( RLE *R, const byte *M, siz h, siz w, siz n ) {
   free(cnts);
 }
 
+void rleEncodePaste( RLE *R, const byte *M, siz h, siz w, siz n, siz oy, siz ox, siz oh, siz ow ) {
+  siz i, j, k, a=w*h; uint c, *cnts; byte p;
+  cnts = malloc(sizeof(uint)*(a+1));
+  for(i=0; i<n; i++) {
+    uint preamble=ox*oh+oy, postamble=(ow-(ox+w))*oh+(oh-(oy+h)), rem=0;
+    const byte *T=M+a*i; k=0; p=0; c=0;
+    for(j=0; j<=a; j++) {
+      if(j==a || T[j]!=p) {
+        uint fr=(j-c)/h, lr=j/h, nr=lr-fr;
+        if(k == 0) {
+          cnts[k++]=c+nr*(oh-h)+preamble;
+        } else {
+          if(nr > 0) {
+            if(p == 0) { /* run of zeros */
+              if(j<a) {
+                cnts[k++]=rem+c+nr*(oh-h);
+              } else {
+                cnts[k++]=rem+c+(nr-1)*(oh-h);
+              }
+	      rem=0;
+            } else { /* run of ones */
+              siz xx, y0=(j-c)-fr*h, y1=j-lr*h;
+              cnts[k++]=h-y0; /* one */
+              for(xx=1; xx<nr; ++xx) {
+                cnts[k++]=(oh-h); /* zero */
+                cnts[k++]=h; /* one */
+              }
+	      if(j<a) {
+                if(y1>0) {
+                  cnts[k++]=(oh-h); /* zero */
+                  cnts[k++]=y1; /* one */
+                } else {
+                  rem=(oh-h); /* next run is run of zeros */
+                }
+              }
+            }
+          } else {
+            cnts[k++]=rem+c;
+	    rem=0;
+          }
+        }
+	c=0;
+        if(j<a) p=T[j];
+      }
+      c++;
+    }
+    if(p == 0) { /* run of zeros */
+      cnts[k-1]+=postamble;
+    } else { /* run of ones */
+      cnts[k++]=postamble;
+    }
+    rleInit(R+i,oh,ow,k,cnts);
+  }
+  free(cnts);
+}
+
 void rleDecode( const RLE *R, byte *M, siz n ) {
   siz i, j, k; for( i=0; i<n; i++ ) {
     byte v=0; for( j=0; j<R[i].m; j++ ) {
