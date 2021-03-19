@@ -48,7 +48,7 @@ try:
     import ujson as json
 except:
     import json
-    print("WARNING! Installing ujson may make loading annotations faster.")
+    print("Notice! Installing ujson may make loading annotations faster.")
 import time
 import matplotlib.pyplot as plt
 from matplotlib.collections import PatchCollection
