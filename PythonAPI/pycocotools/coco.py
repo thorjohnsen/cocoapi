@@ -44,7 +44,11 @@ __version__ = '2.0'
 # Code written by Piotr Dollar and Tsung-Yi Lin, 2014.
 # Licensed under the Simplified BSD License [see bsd.txt]
 
-import json
+try:
+    import ujson as json
+except:
+    import json
+    print("WARNING! Installing ujson may make loading annotations faster.")
 import time
 import matplotlib.pyplot as plt
 from matplotlib.collections import PatchCollection
